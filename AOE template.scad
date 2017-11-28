@@ -14,13 +14,13 @@ cell_scale = 5;
 
 /* [TEMPLATE GEOMETRY] */
 // Minimun thickness (mm) of the template lines (will be approximated up to a nozzle multiple)
-approx_width = 1;
+min_wall_width = 1;
 // Minimum height (mm) of the template (will be approximated up to a layer height multiple)
-approx_height = 3;
-// Range (in number of cells, not in-game units)
-range = 6;  // [1:30]
+min_wall_height = 3;
+// Range (in number of cells, *not* in-game units!)
+range = 1;  // [1:30]
 // Angle (in degrees)
-angle = 90;  // [0:360]
+angle = 0;  // [0:360]
 // Only create the outer edge of the template, as opposed to the full honeycomb
 contour_only = "no";  // [yes,no]
 
@@ -31,8 +31,8 @@ echo(mm_cell_size);
 cell_radius = mm_cell_size * (sqrt(3)/3);
 tr_x = sqrt(3)/2 * mm_cell_size;  // modulo for translation on X axis
 tr_y = mm_cell_size / 2;  // modulo for translation on Y axis
-grid_line_thickness = ceil(approx_width / nozzle_diameter) * nozzle_diameter;
-template_height = ceil(approx_height / layer_height) * layer_height;
+grid_line_thickness = ceil(min_wall_width / nozzle_diameter) * nozzle_diameter;
+template_height = ceil(min_wall_height / layer_height) * layer_height;
 
 // GEOMETRY
 
@@ -91,7 +91,14 @@ module template(range, angle, infill) {
   } else {
     difference() {
       base_geometry(range, angle, infill, extra_padding = grid_line_thickness);
-      base_geometry(range, angle, infill, extra_padding = 0);
+      // the double difference with translation is to avoid horrible artefact
+      // when previewing, due to the co-planar difference operation
+      translate([0, 0, template_height / 3]) {
+        base_geometry(range, angle, infill, extra_padding = 0);
+      }
+      translate([0, 0, -template_height / 3]) {
+        base_geometry(range, angle, infill, extra_padding = 0);
+      }
     }
   }
 }
