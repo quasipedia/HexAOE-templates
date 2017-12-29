@@ -10,3 +10,5 @@ The variables at the top of the script allow to:
 - set the values associated with the map (**cell size, scale, unit of measurement**)
 - input the **radius** of the effect and the **angle** of its cone (use 0 for lines like "ray of frost" or "laser beam", and 360 for things like "blasts" or "toxic cloud"... and anything in-between for the rest!
 - choose if you want the template to produce the internal geometry of the map (the hexagons enclosed in the area) or just its contour.
+
+Visit the [companion thingiverse page](https://www.thingiverse.com/thing:2674668) to see pictures and try the script interactively.
